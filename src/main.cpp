@@ -40,37 +40,9 @@ int v = 0;
 int h = 0;
 float ang=0;
 
-void buildTextures();
-
-void buildTextures()
-{
-   //geracao automatica de coordenadas
-   glGenTextures( 1, &texture);
-   glBindTexture( GL_TEXTURE_2D, texture);
-
-   float escala = 1.0 / 10;
-   float p1[4] = { escala, 0,      0, 0 };
-   float p2[4] = { 0,      escala, 0, 0 };
-   glTexGenfv(GL_S, GL_OBJECT_PLANE, p1);
-   glTexGenfv(GL_T, GL_OBJECT_PLANE, p2);
-
-   glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-   glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   gluBuild2DMipmaps(GL_TEXTURE_2D,
-                     GL_RGB,
-                     img1->getWidth(),
-                     img1->getHeight(),
-                     GL_RGB,
-                     GL_UNSIGNED_BYTE,
-                     data);
-   glutSwapBuffers();
-}
+bool flag = false;
+int savedx=0;
+int savedy=0;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 50;
@@ -91,18 +63,16 @@ void DrawMouseScreenCoords()
 //Deve-se manter essa fun��o com poucas linhas de codigo.
 void render()
 {
-   float abertura = 35;
-   float znear  = 1;
-   float zfar   = 200;
-   glEnable(GL_TEXTURE);
-   glEnable(GL_TEXTURE_2D);
-   CV::plot(abertura, znear, zfar, h, v, RECT_SIZE);
-   glDisable(GL_TEXTURE_2D);
-   glDisable(GL_TEXTURE);
-
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   bt->Render();
+   if (flag){
+      img1->setStartx(mouseX-savedx);
+      img1->setStarty(mouseY-savedy);
+      bimg->updateLocation(mouseX-savedx, mouseY-savedy);
+   }
+   bimg->Render(true);
+   img1->Render();
+   bt->Render(false);
    DrawMouseScreenCoords();
 }
 
@@ -136,13 +106,18 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        {
            img1->convertRGBtoGRAY();
            data = img1->getImage();
-           buildTextures();
        }
        if( bimg->Colidiu(x, y) )
        {
-           img1->convertRGBtoGRAY();
-           data = img1->getImage();
-           buildTextures();
+           savedx = mouseX;
+           savedy = mouseY;
+           flag = true;
+       }
+   }
+   if(state == 1){
+      if( bimg->Colidiu(x, y) )
+       {
+           flag = false;
        }
    }
 }
@@ -151,18 +126,12 @@ int main(void)
 {
    CV::init(&screenWidth, &screenHeight, "Trabalho 1");
 
-   bt = new Botao(100, 100, 140, 50, "Grayscale");
-   
    img1 = new Bmp(".\/Canvas2D\/resources\/kyoto.bmp");
    img1->convertBGRtoRGB();
    data = img1->getImage();
-   if( data != NULL )
-   {
-      glEnable(GL_TEXTURE);
-      glEnable(GL_TEXTURE_2D);
-      buildTextures();
-   }
-   bimg = new Botao(img1->getWidth(), img1->getHeight(), 140, 50, "");
+
+   bimg = new Botao(img1->getStartx(), img1->getStarty(), img1->getWidth(), img1->getHeight(), "");
+   bt = new Botao(100, 100, 140, 50, "Grayscale");
 
    CV::run();
 }

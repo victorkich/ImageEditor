@@ -17,12 +17,24 @@ public:
      strcpy(label, _label);
   }
 
-  void Render()
+  void updateLocation(float _x, float _y)
   {
-      CV::color(0, 1, 0);
-      CV::rectFill(x, y, x + largura, y + altura);
-      CV::color(0, 0, 0);
-      CV::text(x+5, y+altura/2, label); //escreve o label do botao mais ou menos ao centro.
+    x = _x;
+    y = _y;
+  }
+
+  void Render(bool alpha)
+  {
+      if (alpha){
+        //CV::color(0, 0, 0, 1);
+        CV::rectFill(x, y, x + largura, y + altura);
+      }
+      else{
+        CV::color(0, 1, 0);
+        CV::rectFill(x, y, x + largura, y + altura);
+        CV::color(0, 0, 0);
+        CV::text(x+5, y+altura/2, label); //escreve o label do botao mais ou menos ao centro.
+      }
   }
 
   //recebe as coordenadas do mouse para tratar clique ou detectar quando o mouse esta em cima do botao

@@ -87,3 +87,51 @@
 1605561134 /home/victorkich/git/Canvas2D/src/Botao.h
 	"gl_canvas2d.h"
 
+1605628248 source:/home/victorkich/git/ImageEditor/src/bmp.cpp
+	"Bmp.h"
+	<string.h>
+	"gl_canvas2d.h"
+
+1605628192 /home/victorkich/git/ImageEditor/src/Bmp.h
+	<stdio.h>
+	<stdlib.h>
+
+1589218349 source:/home/victorkich/git/ImageEditor/src/Relogio.cpp
+	"Relogio.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1193164156 /home/victorkich/git/ImageEditor/src/Relogio.h
+	"gl_canvas2d.h"
+
+1605564020 /home/victorkich/git/ImageEditor/src/gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	"Vector2.h"
+
+1589217858 /home/victorkich/git/ImageEditor/src/Vector2.h
+
+1605621109 source:/home/victorkich/git/ImageEditor/src/gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1605630770 source:/home/victorkich/git/ImageEditor/src/main.cpp
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	"gl_canvas2d.h"
+	"Botao.h"
+	"Bmp.h"
+
+1605631445 /home/victorkich/git/ImageEditor/src/Botao.h
+	"gl_canvas2d.h"
+

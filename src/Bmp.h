@@ -38,13 +38,14 @@ typedef struct {
    int xresolution,yresolution;     /* Pixels per meter          */
    unsigned int ncolours;           /* Number of colours         */
    unsigned int impcolours;         /* Important colours         */
+   int startx, starty;              /* Image localization        */
 } INFOHEADER;
 
 
 class Bmp
 {
 private:
-   int width, height, imagesize, bytesPerLine, bits;
+   int width, height, imagesize, bytesPerLine, bits, startx, starty;
    unsigned char *data;
 
    HEADER     header;
@@ -57,8 +58,13 @@ public:
    uchar* getImage();
    int    getWidth(void);
    int    getHeight(void);
+   int    getStartx(void);
+   int    getStarty(void);
+   void   setStartx(int);
+   void   setStarty(int);
    void   convertBGRtoRGB(void);
    void   convertRGBtoGRAY(void);
+   void   Render(void);
 };
 
 #endif

@@ -9,6 +9,7 @@
 
 #include "Bmp.h"
 #include <string.h>
+#include "gl_canvas2d.h"
 
 Bmp::Bmp(const char *fileName)
 {
@@ -37,6 +38,36 @@ int Bmp::getWidth(void)
 int Bmp::getHeight(void)
 {
   return height;
+}
+
+int Bmp::getStartx(void){
+   return startx;
+}
+
+int Bmp::getStarty(void){
+   return starty;
+}
+
+void Bmp::setStartx(int x){
+   startx = x;
+}
+
+void Bmp::setStarty(int y){
+   starty = y;
+}
+
+void Bmp::Render()
+{
+   if( data != NULL)
+   {
+      for(int y=0; y<height; y++)
+      for(int x=0; x<width*3; x+=3){
+         int pos = y*bytesPerLine + x;
+         CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
+         CV::point(x/3+startx, abs(y-height)+starty);
+      }
+   }
+
 }
 
 void Bmp::convertBGRtoRGB()
@@ -81,6 +112,9 @@ void Bmp::load(const char *fileName)
      printf("\nErro ao abrir arquivo %s para leitura", fileName);
      return;
   }
+
+  startx = 0;
+  starty = 0;
 
   printf("\n\nCarregando arquivo %s", fileName);
 
