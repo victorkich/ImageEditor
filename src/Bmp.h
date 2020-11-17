@@ -38,33 +38,40 @@ typedef struct {
    int xresolution,yresolution;     /* Pixels per meter          */
    unsigned int ncolours;           /* Number of colours         */
    unsigned int impcolours;         /* Important colours         */
-   int startx, starty;              /* Image localization        */
+   int startx, starty, addx, addy;  /* Image localization        */
 } INFOHEADER;
 
 
 class Bmp
 {
 private:
-   int width, height, imagesize, bytesPerLine, bits, startx, starty;
+   int width, height, imagesize, bytesPerLine, bits, startx, starty, addy, addx;
+   bool window;
    unsigned char *data;
 
    HEADER     header;
    INFOHEADER info;
 
-   void load(const char *fileName);
+   void   load(const char *fileName);
 
 public:
    Bmp(const char *fileName);
    uchar* getImage();
    int    getWidth(void);
    int    getHeight(void);
+   void   setAddx(int);
+   void   setAddy(int);
    int    getStartx(void);
    int    getStarty(void);
-   void   setStartx(int);
-   void   setStarty(int);
+   void   updateStartx(void);
+   void   updateStarty(void);
    void   convertBGRtoRGB(void);
    void   convertRGBtoGRAY(void);
    void   Render(void);
+   bool   collide(int, int);
+   void   restore(const char *fileName);
+   void   chooseChannel(int);
+   void   useWindow(bool);
 };
 
 #endif

@@ -11,10 +11,13 @@
 #include <string.h>
 #include "gl_canvas2d.h"
 
+unsigned char *backup;
+
 Bmp::Bmp(const char *fileName)
 {
    width = height = 0;
    data = NULL;
+   backup = NULL;
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
@@ -40,34 +43,100 @@ int Bmp::getHeight(void)
   return height;
 }
 
-int Bmp::getStartx(void){
+void Bmp::updateStartx()
+{
+   startx = startx+addx;
+   addx = 0;
+}
+
+void Bmp::updateStarty()
+{
+   starty = starty+addy;
+   addy = 0;
+}
+
+int Bmp::getStartx(){
    return startx;
 }
 
-int Bmp::getStarty(void){
+int Bmp::getStarty(){
    return starty;
 }
 
-void Bmp::setStartx(int x){
-   startx = x;
+void Bmp::setAddx(int x)
+{
+   addx = x;
 }
 
-void Bmp::setStarty(int y){
-   starty = y;
+void Bmp::setAddy(int y)
+{
+   addy = y;
+}
+
+void Bmp::useWindow(bool w){
+   window = w;
+}
+
+void Bmp::restore(const char *fileName){
+   load(fileName);
+   convertBGRtoRGB();
+}
+
+bool Bmp::collide(int mx, int my)
+{
+   if( mx >= startx+addx && mx <= (addx + startx + width) && my >= starty+addy && my <= (starty + height + addy) )
+   {
+      return true;
+   }
+   return false;
 }
 
 void Bmp::Render()
 {
+   if (window){
+      CV::color(0.8,0.1,0.1);
+      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+width+5,starty+addy+height+5);
+      CV::color(1,1,1);
+      CV::text(startx+addx,starty+addy-7, "Kyoto.bmp");
+   }
    if( data != NULL)
    {
       for(int y=0; y<height; y++)
       for(int x=0; x<width*3; x+=3){
          int pos = y*bytesPerLine + x;
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
-         CV::point(x/3+startx, abs(y-height)+starty);
+         CV::point(x/3+startx+addx, abs(y-height)+starty+addy);
       }
    }
 
+}
+
+void Bmp::chooseChannel(int c)
+{
+  unsigned char tmp;
+  if( data != NULL )
+  {
+     for(int y=0; y<height; y++)
+     for(int x=0; x<width*3; x+=3)
+     {
+        int pos = y*bytesPerLine + x;
+        switch(c)
+        {
+           case 1:
+             data[pos+1] = 0;
+             data[pos+2] = 0;
+             break;
+           case 2:
+             data[pos] = 0;
+             data[pos+2] = 0;
+             break;
+           case 3:
+             data[pos] = 0;
+             data[pos+1] = 0;
+             break;
+        }
+     }
+  }
 }
 
 void Bmp::convertBGRtoRGB()
@@ -112,9 +181,6 @@ void Bmp::load(const char *fileName)
      printf("\nErro ao abrir arquivo %s para leitura", fileName);
      return;
   }
-
-  startx = 0;
-  starty = 0;
 
   printf("\n\nCarregando arquivo %s", fileName);
 
@@ -187,6 +253,5 @@ void Bmp::load(const char *fileName)
 
   data = new unsigned char[imagesize];
   fread(data, sizeof(unsigned char), imagesize, fp);
-
   fclose(fp);
 }

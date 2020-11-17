@@ -27,18 +27,17 @@
 #include "Botao.h"
 #include "Bmp.h"
 
-#define RECT_SIZE 10
 
+Botao *bt_gs = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
+Botao *bt_r = NULL;
+Botao *bt_b = NULL;
+Botao *bt_g = NULL;
+Botao *bt_clear = NULL;
+Botao *bt_right = NULL;
+Botao *bt_left = NULL;
 
-Botao *bt = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
-Botao *bimg = NULL;
 Bmp *img1;
 unsigned char *data;
-GLuint texture;
-
-int v = 0;
-int h = 0;
-float ang=0;
 
 bool flag = false;
 int savedx=0;
@@ -46,7 +45,7 @@ int savedy=0;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 50;
-int screenWidth = 1280, screenHeight = 720; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int screenWidth = 1280, screenHeight = 800; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
 void DrawMouseScreenCoords()
@@ -63,16 +62,18 @@ void DrawMouseScreenCoords()
 //Deve-se manter essa fun��o com poucas linhas de codigo.
 void render()
 {
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
    if (flag){
-      img1->setStartx(mouseX-savedx);
-      img1->setStarty(mouseY-savedy);
-      bimg->updateLocation(mouseX-savedx, mouseY-savedy);
+      img1->setAddx(mouseX-savedx);
+      img1->setAddy(mouseY-savedy);
    }
-   bimg->Render(true);
    img1->Render();
-   bt->Render(false);
+   bt_gs->Render();
+   bt_r->Render();
+   bt_g->Render();
+   bt_b->Render();
+   bt_clear->Render();
+   bt_right->Render();
+   bt_left->Render();
    DrawMouseScreenCoords();
 }
 
@@ -102,36 +103,71 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
    if( state == 0 ) //clicou
    {
-       if( bt->Colidiu(x, y) )
+       if( bt_gs->Colidiu(x, y) )
        {
            img1->convertRGBtoGRAY();
-           data = img1->getImage();
        }
-       if( bimg->Colidiu(x, y) )
+       if( img1->collide(x, y) )
        {
            savedx = mouseX;
            savedy = mouseY;
            flag = true;
        }
+       if( bt_r->Colidiu(x, y) )
+       {
+           img1->chooseChannel(1);
+       }
+       if( bt_g->Colidiu(x, y) )
+       {
+           img1->chooseChannel(2);
+       }
+       if( bt_b->Colidiu(x, y) )
+       {
+           img1->chooseChannel(3);
+       }
+       if( bt_clear->Colidiu(x, y) )
+       {
+           img1->restore(".\/Canvas2D\/resources\/kyoto.bmp");
+       }
+       if( bt_right->Colidiu(x, y) )
+       {
+          //
+       }
+       if( bt_left->Colidiu(x, y) )
+       {
+          //
+       }
    }
    if(state == 1){
-      if( bimg->Colidiu(x, y) )
+      if( img1->collide(x, y) )
        {
            flag = false;
+           img1->updateStartx();
+           img1->updateStarty();
        }
    }
 }
 
 int main(void)
 {
-   CV::init(&screenWidth, &screenHeight, "Trabalho 1");
+   CV::init(&screenWidth, &screenHeight, "Image Editor");
 
    img1 = new Bmp(".\/Canvas2D\/resources\/kyoto.bmp");
    img1->convertBGRtoRGB();
    data = img1->getImage();
+   img1->setAddx(550);
+   img1->setAddy(200);
+   img1->updateStartx();
+   img1->updateStarty();
+   img1->useWindow(true);
 
-   bimg = new Botao(img1->getStartx(), img1->getStarty(), img1->getWidth(), img1->getHeight(), "");
-   bt = new Botao(100, 100, 140, 50, "Grayscale");
+   bt_gs = new Botao(200, 50, 140, 50, "Grayscale");
+   bt_r = new Botao(200, 150, 140, 50, "Only Red");
+   bt_g = new Botao(200, 250, 140, 50, "Only Green");
+   bt_b = new Botao(200, 350, 140, 50, "Only Blue");
+   bt_clear = new Botao(200, 450, 140, 50, "Clear");
+   bt_right = new Botao(200, 550, 140, 50, "Right Roll");
+   bt_left = new Botao(200, 650, 140, 50, "Left Roll");
 
    CV::run();
 }

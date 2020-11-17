@@ -299,8 +299,8 @@ void reshape (int w, int h)
 //definicao de valores para limpar buffers
 void inicializa()
 {
-   //glClearColor(1,1,1,1);
-   //glPolygonMode(GL_FRONT, GL_FILL);
+   glClearColor(0,0,0,0);
+   glPolygonMode(GL_FRONT, GL_FILL);
 }
 
 void display (void)
