@@ -29,16 +29,16 @@ typedef struct {
 
 
 typedef struct {
-   unsigned int size;               /* Header size in bytes      */
-   int width,height;                /* Width and height of image */
-   unsigned short int planes;       /* Number of colour planes   */
-   unsigned short int bits;         /* Bits per pixel            */
-   unsigned int compression;        /* Compression type          */
-   unsigned int imagesize;          /* Image size in bytes       */
-   int xresolution,yresolution;     /* Pixels per meter          */
-   unsigned int ncolours;           /* Number of colours         */
-   unsigned int impcolours;         /* Important colours         */
-   int startx, starty, addx, addy;  /* Image localization        */
+   unsigned int size;                       /* Header size in bytes      */
+   int width,height;                        /* Width and height of image */
+   unsigned short int planes;               /* Number of colour planes   */
+   unsigned short int bits;                 /* Bits per pixel            */
+   unsigned int compression;                /* Compression type          */
+   unsigned int imagesize;                  /* Image size in bytes       */
+   int xresolution,yresolution;             /* Pixels per meter          */
+   unsigned int ncolours;                   /* Number of colours         */
+   unsigned int impcolours;                 /* Important colours         */
+   int startx, starty, addx, addy;          /* Image localization        */
 } INFOHEADER;
 
 

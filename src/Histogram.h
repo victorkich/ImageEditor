@@ -41,7 +41,7 @@ public:
             b[(int)(data[pos+2])] = b[(int)(data[pos+2])]+1;
         }
     }
-    for(int p = 0 ; p < 255 ; p++){
+    for(int p = 1 ; p < 255 ; p++){
         if (r[p] > max)
             max = r[p];
         if (g[p] > max)
@@ -64,7 +64,7 @@ public:
     CV::text(x-10,y+altura+25,"0");
     CV::text(x+252,y+altura+25,"255");
     CV::rectFill(x,y,x+265,y+altura+10);
-    for(int p = 1 ; p < 255 ; p++){
+    for(int p = 2 ; p < 255 ; p++){
        CV::color(1, 0, 0);
        CV::line(p-1+x+5, (altura-(altura/max)*r[p-1])+y+5, p+x+5, (altura-(altura/max)*r[p])+y+5);
        CV::color(0, 1, 0);

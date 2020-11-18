@@ -12,6 +12,7 @@
 #include "gl_canvas2d.h"
 
 double angle = 0;
+int new_width = 0, new_height=0;
 
 Bmp::Bmp(const char *fileName)
 {
@@ -21,6 +22,8 @@ Bmp::Bmp(const char *fileName)
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
+      new_width = width;
+      new_height = height;
    }
    else
    {
@@ -35,12 +38,12 @@ uchar* Bmp::getImage()
 
 int Bmp::getWidth(void)
 {
-  return width;
+  return new_width;
 }
 
 int Bmp::getHeight(void)
 {
-  return height;
+  return new_height;
 }
 
 void Bmp::updateStartx()
@@ -92,7 +95,7 @@ void Bmp::restore(const char *fileName){
 
 bool Bmp::collide(int mx, int my)
 {
-   if( mx >= startx+addx && mx <= (addx + startx + width) && my >= starty+addy && my <= (starty + height + addy) )
+   if( mx >= startx+addx && mx <= (addx + startx + new_width) && my >= starty+addy && my <= (starty + new_height + addy) )
    {
       return true;
    }
@@ -103,21 +106,34 @@ void Bmp::Render()
 {
    if (window){
       CV::color(0.8,0.1,0.1);
-      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+width+5,starty+addy+height+5);
+      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+new_width+5,starty+addy+new_height+5);
       CV::color(1,1,1);
       CV::text(startx+addx,starty+addy-7, "Kyoto.bmp");
    }
    if( data != NULL)
    {
-      for(int y=0; y<height; y++)
-      for(int x=0; x<width*3; x+=3){
+      int new_centre_height= round(((new_height+1)/2)-1);
+      int new_centre_width= round(((new_width+1)/2)-1);
+
+      float x_step = width/new_width;
+      float y_step = height/new_height;
+
+      for(int y=0; y<new_height; y+=y_step)
+      for(int x=0; x<new_width*3; x+=3*x_step){
          int pos = y*bytesPerLine + x;
+
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
-         double old_x = x/3+startx+addx;
-         double old_y = abs(y-height)+starty+addy;
-         int new_x = (int)(old_x * cos(angle) - old_y * sin(angle));
-         int new_y = (int)(old_x * sin(angle) + old_y * cos(angle));
-         CV::point(new_x, new_y);
+
+         double old_x = x/3-new_centre_width-1;
+         double old_y = y-new_centre_height-1;
+
+         int new_y = round(-old_x*sin(angle)+old_y*cos(angle));
+         int new_x = round(old_x*cos(angle)+old_y*sin(angle));
+
+         new_y=new_centre_height-new_y;
+         new_x=new_centre_width-new_x;
+
+         CV::point(new_x+startx+addx, new_y+starty+addy);
       }
    }
 
@@ -128,8 +144,8 @@ void Bmp::chooseChannel(int c)
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<height; y++)
-     for(int x=0; x<width*3; x+=3)
+     for(int y=0; y<new_height; y++)
+     for(int x=0; x<new_width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         switch(c)
@@ -156,8 +172,8 @@ void Bmp::convertBGRtoRGB()
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<height; y++)
-     for(int x=0; x<width*3; x+=3)
+     for(int y=0; y<new_height; y++)
+     for(int x=0; x<new_width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         tmp = data[pos];
@@ -172,8 +188,8 @@ void Bmp::convertRGBtoGRAY()
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<height; y++)
-     for(int x=0; x<width*3; x+=3)
+     for(int y=0; y<new_height; y++)
+     for(int x=0; x<new_width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         tmp = (data[pos] + data[pos+1] + data[pos+2]) / 3;
