@@ -11,13 +11,13 @@
 #include <string.h>
 #include "gl_canvas2d.h"
 
-unsigned char *backup;
+double angle = 0;
 
 Bmp::Bmp(const char *fileName)
 {
    width = height = 0;
    data = NULL;
-   backup = NULL;
+   
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
@@ -73,8 +73,16 @@ void Bmp::setAddy(int y)
    addy = y;
 }
 
+void Bmp::rotate(int a){
+   angle = (a * M_PI) / 180;
+}
+
 void Bmp::useWindow(bool w){
    window = w;
+}
+
+int Bmp::getbytesPerLine(){
+   return bytesPerLine;
 }
 
 void Bmp::restore(const char *fileName){
@@ -105,7 +113,11 @@ void Bmp::Render()
       for(int x=0; x<width*3; x+=3){
          int pos = y*bytesPerLine + x;
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
-         CV::point(x/3+startx+addx, abs(y-height)+starty+addy);
+         double old_x = x/3+startx+addx;
+         double old_y = abs(y-height)+starty+addy;
+         int new_x = (int)(old_x * cos(angle) - old_y * sin(angle));
+         int new_y = (int)(old_x * sin(angle) + old_y * cos(angle));
+         CV::point(new_x, new_y);
       }
    }
 
@@ -171,7 +183,6 @@ void Bmp::convertRGBtoGRAY()
      }
   }
 }
-
 
 void Bmp::load(const char *fileName)
 {

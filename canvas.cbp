@@ -46,6 +46,10 @@
 		<Unit filename="include/GL/glut.h" />
 		<Unit filename="src/bmp.cpp" />
 		<Unit filename="src/Bmp.h" />
+		<Unit filename="src/Checkbox.h" />
+		<Unit filename="src/Slider.h" />
+		<Unit filename="src/Textfield.h" />
+		<Unit filename="src/Histogram.h" />
 		<Unit filename="src/Bola.h" />
 		<Unit filename="src/Botao.h" />
 		<Unit filename="src/Relogio.cpp" />

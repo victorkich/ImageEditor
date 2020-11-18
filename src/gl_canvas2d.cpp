@@ -48,28 +48,6 @@ void mouseWheelCB(int wheel, int direction, int x, int y);
 void render();
 
 
-void CV::plot(float abertura, float znear, float zfar, int h, int v, int rect_size){
-   CV::color(1, 1, 1);
-   glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-   gluPerspective(abertura, 1, znear, zfar);
-   glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-   glTranslated(h+10, v, -80);
-   glScalef(2, 2, 2);
-   glTranslated(-rect_size/2, -rect_size/2, 0);
-   glEnable(GL_TEXTURE_GEN_S);
-   glEnable(GL_TEXTURE_GEN_T);
-   glBegin(GL_QUADS);
-     glVertex3f(0, 0, 0);
-     glVertex3f(rect_size, 0, 0);
-     glVertex3f(rect_size, rect_size, 0);
-     glVertex3f(0, rect_size, 0);
-   glEnd();
-   glDisable(GL_TEXTURE_GEN_S);
-   glDisable(GL_TEXTURE_GEN_T);
-}
-
 void CV::point(float x, float y)
 {
    glBegin(GL_POINTS);

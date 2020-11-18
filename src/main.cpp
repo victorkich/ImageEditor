@@ -26,6 +26,10 @@
 
 #include "Botao.h"
 #include "Bmp.h"
+#include "Slider.h"
+#include "Checkbox.h"
+#include "Textfield.h"
+#include "Histogram.h"
 
 
 Botao *bt_gs = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
@@ -36,12 +40,15 @@ Botao *bt_clear = NULL;
 Botao *bt_right = NULL;
 Botao *bt_left = NULL;
 
+Histogram *hist = NULL;
+
 Bmp *img1;
 unsigned char *data;
 
 bool flag = false;
 int savedx=0;
 int savedy=0;
+int ang=0;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 50;
@@ -62,6 +69,7 @@ void DrawMouseScreenCoords()
 //Deve-se manter essa fun��o com poucas linhas de codigo.
 void render()
 {
+   hist->Render();
    if (flag){
       img1->setAddx(mouseX-savedx);
       img1->setAddy(mouseY-savedy);
@@ -106,6 +114,8 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if( bt_gs->Colidiu(x, y) )
        {
            img1->convertRGBtoGRAY();
+           data = img1->getImage();
+           hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( img1->collide(x, y) )
        {
@@ -116,26 +126,36 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if( bt_r->Colidiu(x, y) )
        {
            img1->chooseChannel(1);
+           data = img1->getImage();
+           hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_g->Colidiu(x, y) )
        {
            img1->chooseChannel(2);
+           data = img1->getImage();
+           hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_b->Colidiu(x, y) )
        {
            img1->chooseChannel(3);
+           data = img1->getImage();
+           hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_clear->Colidiu(x, y) )
        {
            img1->restore(".\/Canvas2D\/resources\/kyoto.bmp");
+           data = img1->getImage();
+           hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_right->Colidiu(x, y) )
        {
-          //
+           ang -= 10;
+           img1->rotate(ang);
        }
        if( bt_left->Colidiu(x, y) )
        {
-          //
+           ang += 10;
+           img1->rotate(ang);
        }
    }
    if(state == 1){
@@ -152,7 +172,7 @@ int main(void)
 {
    CV::init(&screenWidth, &screenHeight, "Image Editor");
 
-   img1 = new Bmp(".\/Canvas2D\/resources\/kyoto.bmp");
+   img1 = new Bmp(".\/ImageEditor\/resources\/kyoto.bmp");
    img1->convertBGRtoRGB();
    data = img1->getImage();
    img1->setAddx(550);
@@ -160,6 +180,8 @@ int main(void)
    img1->updateStartx();
    img1->updateStarty();
    img1->useWindow(true);
+
+   hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
 
    bt_gs = new Botao(200, 50, 140, 50, "Grayscale");
    bt_r = new Botao(200, 150, 140, 50, "Only Red");

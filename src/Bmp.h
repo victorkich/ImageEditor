@@ -57,6 +57,7 @@ private:
 public:
    Bmp(const char *fileName);
    uchar* getImage();
+   int    getbytesPerLine(void);
    int    getWidth(void);
    int    getHeight(void);
    void   setAddx(int);
@@ -72,6 +73,7 @@ public:
    void   restore(const char *fileName);
    void   chooseChannel(int);
    void   useWindow(bool);
+   void   rotate(int);
 };
 
 #endif
