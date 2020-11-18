@@ -74,6 +74,9 @@ public:
    void   chooseChannel(int);
    void   useWindow(bool);
    void   rotate(int);
+   bool   windowCollide(int, int);
+   void   resize(int, int);
+   void   updateResize();
 };
 
 #endif

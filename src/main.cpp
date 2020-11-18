@@ -45,7 +45,8 @@ Histogram *hist = NULL;
 Bmp *img1;
 unsigned char *data;
 
-bool flag = false;
+bool moving = false;
+bool resizing = false;
 int savedx=0;
 int savedy=0;
 int ang=0;
@@ -70,9 +71,14 @@ void DrawMouseScreenCoords()
 void render()
 {
    hist->Render();
-   if (flag){
+   if (moving)
+   {
       img1->setAddx(mouseX-savedx);
       img1->setAddy(mouseY-savedy);
+   }
+   if (resizing)
+   {
+      img1->resize(mouseX-savedx, mouseY-savedy);
    }
    img1->Render();
    bt_gs->Render();
@@ -121,7 +127,13 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        {
            savedx = mouseX;
            savedy = mouseY;
-           flag = true;
+           moving = true;
+       }
+       if (img1->windowCollide(x, y))
+       {
+           savedx = mouseX;
+           savedy = mouseY;
+           resizing = true;
        }
        if( bt_r->Colidiu(x, y) )
        {
@@ -161,9 +173,15 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    if(state == 1){
       if( img1->collide(x, y) )
        {
-           flag = false;
+           moving = false;
            img1->updateStartx();
            img1->updateStarty();
+       }
+       if( img1->windowCollide(x, y) ){
+           resizing = false;
+           img1->updateStartx();
+           img1->updateStarty();
+           img1->updateResize();
        }
    }
 }

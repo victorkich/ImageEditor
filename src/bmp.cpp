@@ -12,7 +12,7 @@
 #include "gl_canvas2d.h"
 
 double angle = 0;
-int new_width = 0, new_height=0;
+int new_width = 0, new_height=0, borderType=0, addh=0, addw=0;
 
 Bmp::Bmp(const char *fileName)
 {
@@ -22,8 +22,6 @@ Bmp::Bmp(const char *fileName)
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
-      new_width = width;
-      new_height = height;
    }
    else
    {
@@ -48,13 +46,13 @@ int Bmp::getHeight(void)
 
 void Bmp::updateStartx()
 {
-   startx = startx+addx;
+   startx += addx;
    addx = 0;
 }
 
 void Bmp::updateStarty()
 {
-   starty = starty+addy;
+   starty += addy;
    addy = 0;
 }
 
@@ -84,6 +82,54 @@ void Bmp::useWindow(bool w){
    window = w;
 }
 
+bool Bmp::windowCollide(int mx, int my){
+   if( mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy - 25) && my <= (starty + new_height + addy + 5) )
+   {
+      if (mx >= (startx + addx - 5) && mx <= (addx + startx + 5) && my >= (starty + addy) && my <= (starty + new_height + addy)){
+         borderType = 1;
+         return true;
+      }else if (mx >= (startx + addx + new_width) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy) && my <= (starty + new_height + addy)){
+         borderType = 2;
+         return true;
+      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy - 25) && my <= (starty + addy)){
+         borderType = 3;
+         return true;
+      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy + new_height) && my <= (starty + new_height + addy + 5)){
+         borderType = 4;
+         return true;
+      }
+   }
+   borderType = 0;
+   return false;
+}
+
+void Bmp::resize(int x, int y){
+   switch (borderType){
+      case 1:
+         addx = x;
+         addw = -x;
+         break;
+      case 2:
+         addw = x;
+         break;
+      case 3:
+         addy = y;
+         addh = -y;
+         break;
+      case 4:
+         addh = y;
+         break;
+   }
+
+}
+
+void Bmp::updateResize(){
+   new_width += addw;
+   new_height += addh;
+   addw = 0;
+   addh = 0;
+}
+
 int Bmp::getbytesPerLine(){
    return bytesPerLine;
 }
@@ -106,26 +152,25 @@ void Bmp::Render()
 {
    if (window){
       CV::color(0.8,0.1,0.1);
-      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+new_width+5,starty+addy+new_height+5);
+      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+new_width+addw+5,starty+addy+new_height+addh+5);
       CV::color(1,1,1);
       CV::text(startx+addx,starty+addy-7, "Kyoto.bmp");
    }
    if( data != NULL)
    {
-      int new_centre_height= round(((new_height+1)/2)-1);
-      int new_centre_width= round(((new_width+1)/2)-1);
+      int new_centre_height= round(((new_height+addh+1)/2)-1);
+      int new_centre_width= round(((new_width+addw+1)/2)-1);
 
-      float x_step = width/new_width;
-      float y_step = height/new_height;
+      double x_step = 3*(double(width)/double(new_width+addw));
+      double y_step = double(height)/double(new_height+addh);
 
-      for(int y=0; y<new_height; y+=y_step)
-      for(int x=0; x<new_width*3; x+=3*x_step){
+      for(int y=0; y<height; y++)
+      for(int x=0; x<width*3; x+=3){
          int pos = y*bytesPerLine + x;
-
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
 
-         double old_x = x/3-new_centre_width-1;
-         double old_y = y-new_centre_height-1;
+         double old_x = x/x_step-new_centre_width-1;
+         double old_y = y/y_step-new_centre_height-1;
 
          int new_y = round(-old_x*sin(angle)+old_y*cos(angle));
          int new_x = round(old_x*cos(angle)+old_y*sin(angle));
@@ -135,6 +180,7 @@ void Bmp::Render()
 
          CV::point(new_x+startx+addx, new_y+starty+addy);
       }
+      
    }
 
 }
@@ -281,4 +327,7 @@ void Bmp::load(const char *fileName)
   data = new unsigned char[imagesize];
   fread(data, sizeof(unsigned char), imagesize, fp);
   fclose(fp);
+
+  new_width = width;
+  new_height = height;
 }
