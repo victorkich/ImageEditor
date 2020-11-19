@@ -13,6 +13,7 @@
 
 double angle = 0;
 int new_width = 0, new_height=0, borderType=0, addh=0, addw=0;
+int left=0, right=0, top=0, bottom=0;
 
 Bmp::Bmp(const char *fileName)
 {
@@ -85,16 +86,16 @@ void Bmp::useWindow(bool w){
 bool Bmp::windowCollide(int mx, int my){
    if( mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy - 25) && my <= (starty + new_height + addy + 5) )
    {
-      if (mx >= (startx + addx - 5) && mx <= (addx + startx + 5) && my >= (starty + addy) && my <= (starty + new_height + addy)){
+      if (mx >= (startx + addx - 5) && mx <= (addx + startx + 5) && my >= (starty + addy) && my <= (starty + new_height + addh + addy)){
          borderType = 1;
          return true;
-      }else if (mx >= (startx + addx + new_width) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy) && my <= (starty + new_height + addy)){
+      }else if (mx >= (startx + addx + new_width + addw) && mx <= (addx + startx + new_width + addw + 5) && my >= (starty + addy) && my <= (starty + new_height + addh + addy)){
          borderType = 2;
          return true;
-      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy - 25) && my <= (starty + addy)){
+      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + addw + 5) && my >= (starty + addy - 25) && my <= (starty + addy)){
          borderType = 3;
          return true;
-      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + 5) && my >= (starty + addy + new_height) && my <= (starty + new_height + addy + 5)){
+      }else if (mx >= (startx + addx - 5) && mx <= (addx + startx + new_width + addw + 5) && my >= (starty + addy + new_height + addh) && my <= (starty + new_height + addh + addy + 5)){
          borderType = 4;
          return true;
       }
@@ -110,6 +111,8 @@ void Bmp::resize(int x, int y){
          addw = -x;
          break;
       case 2:
+         addx = 0;
+         addy = 0;
          addw = x;
          break;
       case 3:
@@ -117,6 +120,8 @@ void Bmp::resize(int x, int y){
          addh = -y;
          break;
       case 4:
+         addx = 0;
+         addy = 0;
          addh = y;
          break;
    }
@@ -152,9 +157,9 @@ void Bmp::Render()
 {
    if (window){
       CV::color(0.8,0.1,0.1);
-      CV::rectFill(startx+addx-5,starty+addy-25,startx+addx+new_width+addw+5,starty+addy+new_height+addh+5);
+      CV::rectFill(left+startx+addx-5,top+starty+addy-25,right+startx+addx+addw+5,bottom+starty+addy+addh+5);
       CV::color(1,1,1);
-      CV::text(startx+addx,starty+addy-7, "Kyoto.bmp");
+      CV::text(left+startx+addx,top+starty+addy-7, "Kyoto.bmp");
    }
    if( data != NULL)
    {
@@ -163,6 +168,8 @@ void Bmp::Render()
 
       double x_step = 3*(double(width)/double(new_width+addw));
       double y_step = double(height)/double(new_height+addh);
+
+      bool first = true;
 
       for(int y=0; y<height; y++)
       for(int x=0; x<width*3; x+=3){
@@ -178,6 +185,22 @@ void Bmp::Render()
          new_y=new_centre_height-new_y;
          new_x=new_centre_width-new_x;
 
+         if (first){
+            top = y;
+            bottom = y;
+            left = x;
+            right = x;
+            first=false;
+         }else{
+            if (top > new_y)
+               top = new_y;
+            if (bottom < new_y)
+               bottom = new_y;
+            if (left > new_x)
+               left = new_x;
+            if (right < new_x)
+               right = new_x;
+         }
          CV::point(new_x+startx+addx, new_y+starty+addy);
       }
       
