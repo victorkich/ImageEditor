@@ -41,12 +41,15 @@ Botao *bt_right = NULL;
 Botao *bt_left = NULL;
 
 Histogram *hist = NULL;
+Checkbox *cb = NULL;
+Slider *slid_r = NULL;
+Slider *slid_g = NULL;
+Slider *slid_b = NULL;
 
 Bmp *img1;
 unsigned char *data;
 
-bool moving = false;
-bool resizing = false;
+bool moving = false, resizing = false, sliding_r = false, sliding_g = false, sliding_b = false;
 int savedx=0;
 int savedy=0;
 int ang=0;
@@ -60,9 +63,26 @@ void DrawMouseScreenCoords()
 {
     char str[100];
     sprintf(str, "Mouse: (%d,%d)", mouseX, mouseY);
-    CV::text(10,300, str);
+    //CV::text(10,300, str);
     sprintf(str, "Screen: (%d,%d)", screenWidth, screenHeight);
-    CV::text(10,320, str);
+    //CV::text(10,320, str);
+}
+
+void updateScales()
+{
+   cb->updateScale(screenWidth, screenHeight);
+   hist->updateScale(screenWidth, screenHeight);
+   slid_r->updateScale(screenWidth, screenHeight);
+   slid_g->updateScale(screenWidth, screenHeight);
+   slid_b->updateScale(screenWidth, screenHeight);
+   img1->updateScale(screenWidth, screenHeight);
+   bt_clear->updateScale(screenWidth>>5, screenHeight>>5);
+   bt_r->updateScale(screenWidth>>5, (screenHeight>>5)*5);
+   bt_g->updateScale(screenWidth>>5, (screenHeight>>5)*9);
+   bt_b->updateScale(screenWidth>>5, (screenHeight>>5)*13);
+   bt_gs->updateScale(screenWidth>>5, (screenHeight>>5)*17);
+   bt_right->updateScale(screenWidth>>5, (screenHeight>>5)*21);
+   bt_left->updateScale(screenWidth>>5, (screenHeight>>5)*25);
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -70,7 +90,17 @@ void DrawMouseScreenCoords()
 //Deve-se manter essa fun��o com poucas linhas de codigo.
 void render()
 {
-   hist->Render();
+   glClearColor(slid_r->getValue()/100, slid_g->getValue()/100, slid_b->getValue()/100, 0);
+   updateScales();
+   cb->Render();
+   slid_r->Render();
+   slid_g->Render();
+   slid_b->Render();
+   if (cb->getStatus())
+   {
+       hist->Render();
+   }
+    
    if (moving)
    {
       img1->setAddx(mouseX-savedx);
@@ -80,6 +110,19 @@ void render()
    {
       img1->resize(mouseX-savedx, mouseY-savedy);
    }
+   if (sliding_r)
+   {
+       slid_r->setValue(mouseX-savedx);
+   }
+   if (sliding_g)
+   {
+       slid_g->setValue(mouseX-savedx);
+   }
+   if (sliding_b)
+   {
+       slid_b->setValue(mouseX-savedx);
+   }
+
    img1->Render();
    bt_gs->Render();
    bt_r->Render();
@@ -169,6 +212,25 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
            ang += 10;
            img1->rotate(ang);
        }
+       if( cb->Colidiu(x, y) )
+       {
+           cb->updateStatus();
+       }
+       if (slid_r->Colidiu(x, y))
+       {
+           savedx = mouseX;
+           sliding_r = true;
+       }
+       if (slid_g->Colidiu(x, y))
+       {
+           savedx = mouseX;
+           sliding_g = true;
+       }
+       if (slid_b->Colidiu(x, y))
+       {
+           savedx = mouseX;
+           sliding_b = true;
+       }
    }
    if(state == 1){
       if( img1->collide(x, y) )
@@ -182,6 +244,21 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
            img1->updateStartx();
            img1->updateStarty();
            img1->updateResize();
+       }
+       if( sliding_r )
+       {
+           sliding_r = false;
+           slid_r->updateValue();
+       }
+       if( sliding_g )
+       {
+           sliding_g = false;
+           slid_g->updateValue();
+       }
+       if( sliding_b )
+       {
+           sliding_b = false;
+           slid_b->updateValue();
        }
    }
 }
@@ -202,12 +279,27 @@ int main(void)
    hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
 
    bt_gs = new Botao(200, 50, 140, 50, "Grayscale");
-   bt_r = new Botao(200, 150, 140, 50, "Only Red");
-   bt_g = new Botao(200, 250, 140, 50, "Only Green");
-   bt_b = new Botao(200, 350, 140, 50, "Only Blue");
+   bt_gs->setColor(0.6, 0.6, 0.6);
+   bt_r = new Botao(200, 150, 140, 50, "Red Channel");
+   bt_r->setColor(1, 0.2, 0.2);
+   bt_g = new Botao(200, 250, 140, 50, "Green Channel");
+   bt_g->setColor(0.2, 0.8, 0.2);
+   bt_b = new Botao(200, 350, 140, 50, "Blue Channel");
+   bt_b->setColor(0.2, 0.2, 1);
    bt_clear = new Botao(200, 450, 140, 50, "Clear");
-   bt_right = new Botao(200, 550, 140, 50, "Right Roll");
-   bt_left = new Botao(200, 650, 140, 50, "Left Roll");
+   bt_clear->setColor(0.2, 0.6, 0.2);
+   bt_right = new Botao(200, 550, 140, 50, "Right Spin");
+   bt_right->setColor(0.2, 0.4, 0.6);
+   bt_left = new Botao(200, 650, 140, 50, "Left Spin");
+   bt_left->setColor(0.6, 0.4, 0.2);
+
+   cb = new Checkbox(1000, 700, 50, 50, "Histogram", false);
+   slid_r = new Slider(1000, 500, 200, 50, 25);
+   slid_r->setColor(1,0.3,0.3);
+   slid_g = new Slider(1000, 550, 200, 50, 25);
+   slid_g->setColor(0.3,1,0.3);
+   slid_b = new Slider(1000, 600, 200, 50, 25);
+   slid_b->setColor(0.3,0.3,1);
 
    CV::run();
 }

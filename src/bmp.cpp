@@ -75,6 +75,11 @@ void Bmp::setAddy(int y)
    addy = y;
 }
 
+void Bmp::updateScale(int w, int h){
+   startx = w;
+   starty = h;
+}
+
 void Bmp::rotate(int a){
    angle = (a * M_PI) / 180;
 }
@@ -129,8 +134,8 @@ void Bmp::resize(int x, int y){
 }
 
 void Bmp::updateResize(){
-   new_width += addw;
-   new_height += addh;
+   new_width += abs(addw);
+   new_height += abs(addh);
    addw = 0;
    addh = 0;
 }
@@ -201,6 +206,7 @@ void Bmp::Render()
             if (right < new_x)
                right = new_x;
          }
+
          CV::point(new_x+startx+addx, new_y+starty+addy);
       }
       
@@ -213,8 +219,8 @@ void Bmp::chooseChannel(int c)
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<new_height; y++)
-     for(int x=0; x<new_width*3; x+=3)
+     for(int y=0; y<height; y++)
+     for(int x=0; x<width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         switch(c)
@@ -241,8 +247,8 @@ void Bmp::convertBGRtoRGB()
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<new_height; y++)
-     for(int x=0; x<new_width*3; x+=3)
+     for(int y=0; y<height; y++)
+     for(int x=0; x<width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         tmp = data[pos];
@@ -257,8 +263,8 @@ void Bmp::convertRGBtoGRAY()
   unsigned char tmp;
   if( data != NULL )
   {
-     for(int y=0; y<new_height; y++)
-     for(int x=0; x<new_width*3; x+=3)
+     for(int y=0; y<height; y++)
+     for(int x=0; x<width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
         tmp = (data[pos] + data[pos+1] + data[pos+2]) / 3;

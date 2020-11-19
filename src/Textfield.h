@@ -22,6 +22,11 @@ public:
     x = _x;
     y = _y;
   }
+  
+  void updateScale(int w, int h){
+    x = w;
+    y = h;
+  }
 
   void Render()
   {

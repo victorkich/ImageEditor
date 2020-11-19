@@ -4,7 +4,7 @@
 #include "gl_canvas2d.h"
 
 class Botao{
-  float altura, largura, x, y;
+  float altura, largura, x, y, cr=0, cg=0, cb=0;
   char label[100];
 
 public:
@@ -17,17 +17,29 @@ public:
      strcpy(label, _label);
   }
 
+  void setColor(float r, float g, float b)
+  {
+    cr = r;
+    cg = g;
+    cb = b;
+  }
+
   void updateLocation(float _x, float _y)
   {
     x = _x;
     y = _y;
   }
 
+  void updateScale(int w, int h){
+    x = w;
+    y = h;
+  }
+
   void Render()
   {
-    CV::color(0, 1, 0);
+    CV::color(cr, cg, cb);
     CV::rectFill(x, y, x + largura, y + altura);
-    CV::color(0, 0, 0);
+    CV::color(1, 1, 1);
     CV::text(x+5, y+altura/2, label); //escreve o label do botao mais ou menos ao centro.
   }
 

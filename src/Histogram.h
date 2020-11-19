@@ -57,10 +57,15 @@ public:
     y = _y;
   }
 
+  void updateScale(int w, int h){
+    x = w;
+    y = h;
+  }
+
   void Render()
   {
     CV::color(1, 1, 1);
-    CV::text(x+80,y-10,"Histograma");
+    CV::text(x+80,y-10,"Histogram");
     CV::text(x-10,y+altura+25,"0");
     CV::text(x+252,y+altura+25,"255");
     CV::rectFill(x,y,x+265,y+altura+10);

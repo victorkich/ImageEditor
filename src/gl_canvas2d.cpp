@@ -241,6 +241,16 @@ void motion(int x, int y)
    ConvertMouseCoord(-2, -2, -2, -2, x, y);
 }
 
+float normalizer(float x, float y)
+{
+   return sqrt(pow(x, 2) + pow(y, 2));
+}
+
+float normalize(float h, float p)
+{
+   return p/h;
+}
+
 void ConvertMouseCoord(int button, int state, int wheel, int direction, int x, int y)
 {
 #if Y_CANVAS_CRESCE_PARA_CIMA == TRUE
