@@ -75,11 +75,6 @@ void Bmp::setAddy(int y)
    addy = y;
 }
 
-void Bmp::updateScale(int w, int h){
-   startx = w;
-   starty = h;
-}
-
 void Bmp::rotate(int a){
    angle = (a * M_PI) / 180;
 }

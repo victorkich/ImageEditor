@@ -25,9 +25,11 @@ public:
     y = _y;
   }
 
-  void updateScale(int w, int h){
+  void updateScale(int w, int h, int a, int l){
     x = w;
     y = h;
+    altura = a;
+    largura = l;
   }
 
   void updateStatus()
@@ -45,7 +47,7 @@ public:
     CV::color(1, 1, 1);
     CV::rect(x, y, x + largura, y + altura);
     CV::color(1, 1, 1);
-    CV::text(x+largura+5, y+altura/2, label); //escreve o label do botao mais ou menos ao centro.
+    CV::text(x+largura+5, y+altura/2+4, label); //escreve o label do botao mais ou menos ao centro.
 
     if (active)
     {

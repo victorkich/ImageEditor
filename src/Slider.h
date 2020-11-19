@@ -49,9 +49,11 @@ public:
     
   }
 
-  void updateScale(int w, int h){
+  void updateScale(int w, int h, int a, int l){
     x = w;
     y = h;
+    altura = a;
+    largura = l;
   }
 
   void updateLocation(float _x, float _y)

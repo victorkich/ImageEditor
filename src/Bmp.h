@@ -77,7 +77,6 @@ public:
    bool   windowCollide(int, int);
    void   resize(int, int);
    void   updateResize(void);
-   void   updateScale(int, int);
 };
 
 #endif

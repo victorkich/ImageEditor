@@ -56,7 +56,7 @@ int ang=0;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 50;
-int screenWidth = 1280, screenHeight = 800; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int screenWidth = 1280, screenHeight = 720; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
 void DrawMouseScreenCoords()
@@ -70,19 +70,18 @@ void DrawMouseScreenCoords()
 
 void updateScales()
 {
-   cb->updateScale(screenWidth, screenHeight);
-   hist->updateScale(screenWidth, screenHeight);
-   slid_r->updateScale(screenWidth, screenHeight);
-   slid_g->updateScale(screenWidth, screenHeight);
-   slid_b->updateScale(screenWidth, screenHeight);
-   img1->updateScale(screenWidth, screenHeight);
-   bt_clear->updateScale(screenWidth>>5, screenHeight>>5);
-   bt_r->updateScale(screenWidth>>5, (screenHeight>>5)*5);
-   bt_g->updateScale(screenWidth>>5, (screenHeight>>5)*9);
-   bt_b->updateScale(screenWidth>>5, (screenHeight>>5)*13);
-   bt_gs->updateScale(screenWidth>>5, (screenHeight>>5)*17);
-   bt_right->updateScale(screenWidth>>5, (screenHeight>>5)*21);
-   bt_left->updateScale(screenWidth>>5, (screenHeight>>5)*25);
+   cb->updateScale((screenWidth>>5)*25, screenHeight>>5, round(float(50*screenHeight)/720), round(float(50*screenWidth)/1280));
+   hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6, round(float(150*screenHeight)/720));
+   slid_r->updateScale((screenWidth>>5)*25, (screenHeight>>5)*23, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
+   slid_g->updateScale((screenWidth>>5)*25, (screenHeight>>5)*26, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
+   slid_b->updateScale((screenWidth>>5)*25, (screenHeight>>5)*29, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
+   bt_clear->updateScale(screenWidth>>5, screenHeight>>4, round(float(50*screenHeight)/720));
+   bt_r->updateScale(screenWidth>>5, (screenHeight>>4)*3, round(float(50*screenHeight)/720));
+   bt_g->updateScale(screenWidth>>5, (screenHeight>>4)*5, round(float(50*screenHeight)/720));
+   bt_b->updateScale(screenWidth>>5, (screenHeight>>4)*7, round(float(50*screenHeight)/720));
+   bt_gs->updateScale(screenWidth>>5, (screenHeight>>4)*9, round(float(50*screenHeight)/720));
+   bt_right->updateScale(screenWidth>>5, (screenHeight>>4)*11, round(float(50*screenHeight)/720));
+   bt_left->updateScale(screenWidth>>5, (screenHeight>>4)*13, round(float(50*screenHeight)/720));
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -270,8 +269,8 @@ int main(void)
    img1 = new Bmp(".\/ImageEditor\/resources\/kyoto.bmp");
    img1->convertBGRtoRGB();
    data = img1->getImage();
-   img1->setAddx(550);
-   img1->setAddy(200);
+   img1->setAddx((screenWidth>>4)*5);
+   img1->setAddy((screenHeight>>5)*9);
    img1->updateStartx();
    img1->updateStarty();
    img1->useWindow(true);

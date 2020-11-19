@@ -57,9 +57,10 @@ public:
     y = _y;
   }
 
-  void updateScale(int w, int h){
+  void updateScale(int w, int h, int a){
     x = w;
     y = h;
+    altura = a;
   }
 
   void Render()
