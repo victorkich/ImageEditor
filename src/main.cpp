@@ -245,7 +245,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
            img1->updateStartx();
            img1->updateStarty();
        }
-       if( img1->windowCollide(x, y) ){
+       if( resizing ){
            resizing = false;
            img1->updateStartx();
            img1->updateStarty();
