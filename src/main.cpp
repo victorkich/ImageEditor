@@ -52,7 +52,7 @@ Textfield *tf = NULL;
 Bmp *img1;
 unsigned char *data;
 
-bool moving = false, resizing = false, sliding_r = false, sliding_g = false, sliding_b = false, scrolling = false;
+bool moving = false, resizing = false, sliding_r = false, sliding_g = false, sliding_b = false, scrolling = false, writing = false;
 int savedx=0;
 int savedy=0;
 int ang=0;
@@ -148,6 +148,10 @@ void render()
 void keyboard(int key)
 {
    printf("\nTecla: %d" , key);
+   if( writing )
+   {
+       tf->addChar(key);
+   }
    if( key < 200 )
    {
       opcao = key;
@@ -170,6 +174,10 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
    if( state == 0 ) //clicou
    {
+       if( tf->Colidiu(x, y) )
+       {
+           writing = !writing;
+       }
        if( bt_gs->Colidiu(x, y) )
        {
            bt_gs->setColor(0.4, 0.4, 0.4);
