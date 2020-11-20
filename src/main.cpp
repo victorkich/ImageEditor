@@ -70,7 +70,7 @@ void DrawMouseScreenCoords()
 
 void updateScales()
 {
-   cb->updateScale((screenWidth>>5)*25, screenHeight>>5, round(float(50*screenHeight)/720), round(float(50*screenWidth)/1280));
+   cb->updateScale((screenWidth>>5)*26, screenHeight>>5, round(float(40*screenHeight)/720), round(float(40*screenWidth)/1280));
    hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6, round(float(150*screenHeight)/720));
    slid_r->updateScale((screenWidth>>5)*25, (screenHeight>>5)*23, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
    slid_g->updateScale((screenWidth>>5)*25, (screenHeight>>5)*26, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
@@ -161,6 +161,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    {
        if( bt_gs->Colidiu(x, y) )
        {
+           bt_gs->setColor(0.4, 0.4, 0.4);
            img1->convertRGBtoGRAY();
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
@@ -179,35 +180,41 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        }
        if( bt_r->Colidiu(x, y) )
        {
+           bt_r->setColor(0.8, 0, 0);
            img1->chooseChannel(1);
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_g->Colidiu(x, y) )
        {
+           bt_g->setColor(0, 0.6, 0);
            img1->chooseChannel(2);
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_b->Colidiu(x, y) )
        {
+           bt_b->setColor(0, 0, 0.8);
            img1->chooseChannel(3);
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_clear->Colidiu(x, y) )
        {
+           bt_clear->setColor(0, 0.4, 0);
            img1->restore(".\/Canvas2D\/resources\/kyoto.bmp");
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
        if( bt_right->Colidiu(x, y) )
        {
+           bt_right->setColor(0, 0.2, 0.4);
            ang -= 10;
            img1->rotate(ang);
        }
        if( bt_left->Colidiu(x, y) )
        {
+           bt_left->setColor(0.4, 0.2, 0);
            ang += 10;
            img1->rotate(ang);
        }
@@ -259,6 +266,34 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
            sliding_b = false;
            slid_b->updateValue();
        }
+       if( bt_gs->Colidiu(x, y) )
+       {
+           bt_gs->setColor(0.6, 0.6, 0.6);
+       }
+       if( bt_r->Colidiu(x, y) )
+       {
+           bt_r->setColor(1, 0.2, 0.2);
+       }
+       if( bt_g->Colidiu(x, y) )
+       {
+           bt_g->setColor(0.2, 0.8, 0.2);
+       }
+       if( bt_b->Colidiu(x, y) )
+       {
+           bt_b->setColor(0.2, 0.2, 1);
+       }
+       if( bt_clear->Colidiu(x, y) )
+       {
+           bt_clear->setColor(0.2, 0.6, 0.2);
+       }
+       if( bt_right->Colidiu(x, y) )
+       {
+           bt_right->setColor(0.2, 0.4, 0.6);
+       }
+       if( bt_left->Colidiu(x, y) )
+       {
+           bt_left->setColor(0.6, 0.4, 0.2);
+       }
    }
 }
 
@@ -292,7 +327,7 @@ int main(void)
    bt_left = new Botao(200, 650, 140, 50, "Left Spin");
    bt_left->setColor(0.6, 0.4, 0.2);
 
-   cb = new Checkbox(1000, 700, 50, 50, "Histogram", false);
+   cb = new Checkbox(1000, 700, 40, 40, "Histogram", false);
    slid_r = new Slider(1000, 500, 200, 50, 25);
    slid_r->setColor(1,0.3,0.3);
    slid_g = new Slider(1000, 550, 200, 50, 25);
