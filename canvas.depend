@@ -87,7 +87,7 @@
 1605561134 /home/victorkich/git/Canvas2D/src/Botao.h
 	"gl_canvas2d.h"
 
-1605905517 source:/home/victorkich/git/ImageEditor/src/bmp.cpp
+1605909056 source:/home/victorkich/git/ImageEditor/src/bmp.cpp
 	"Bmp.h"
 	<string.h>
 	"gl_canvas2d.h"
@@ -120,7 +120,7 @@
 	"gl_canvas2d.h"
 	<GL/glut.h>
 
-1605906194 source:/home/victorkich/git/ImageEditor/src/main.cpp
+1605906321 source:/home/victorkich/git/ImageEditor/src/main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>

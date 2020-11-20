@@ -26,9 +26,9 @@ public:
     cb2 = b2;
   }
 
-  float getValue()
+  int getValue()
   {
-    return float(value + addv);
+    return value + addv;
   }
 
   void updateValue(){

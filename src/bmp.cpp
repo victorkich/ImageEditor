@@ -37,12 +37,12 @@ uchar* Bmp::getImage()
 
 int Bmp::getWidth(void)
 {
-  return new_width;
+  return width;
 }
 
 int Bmp::getHeight(void)
 {
-  return new_height;
+  return height;
 }
 
 void Bmp::updateStartx()

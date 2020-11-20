@@ -64,9 +64,9 @@ int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da ren
 
 void updateScales()
 {
-   int sb_value = (int)(float(sb->getValue())*float(100/screenHeight));
-   cb->updateScale((screenWidth>>5)*26, screenHeight>>5 + sb_value, round(float(40*screenHeight)/720), round(float(40*screenWidth)/1280) + sb_value);
-   hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6 + sb_value, round(float(150*screenHeight)/720));
+   printf("\nNivel scroolbar: %d", sb->getValue());
+   cb->updateScale((screenWidth>>5)*26, screenHeight>>5, round(float(40*screenHeight)/720), round(float(40*screenWidth)/1280));
+   hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6, round(float(150*screenHeight)/720));
    slid_r->updateScale((screenWidth>>5)*25, (screenHeight>>5)*23, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
    slid_g->updateScale((screenWidth>>5)*25, (screenHeight>>5)*26, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
    slid_b->updateScale((screenWidth>>5)*25, (screenHeight>>5)*29, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
@@ -108,21 +108,16 @@ void render()
 //funcao chamada toda vez que uma tecla for pressionada.
 void keyboard(int key)
 {
-   printf("\nTecla: %d" , key);
    if( writing )
    {
        tf->addChar(key);
-   }
-   if( key < 200 )
-   {
-      opcao = key;
    }
 }
 
 //funcao chamada toda vez que uma tecla for liberada
 void keyboardUp(int key)
 {
-   printf("\nLiberou: %d" , key);
+   //
 }
 
 //funcao para tratamento de mouse: cliques, movimentos e arrastos
@@ -130,8 +125,6 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
    mouseX = x; //guarda as coordenadas do mouse para exibir dentro da render()
    mouseY = y;
-
-   printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 
    if( state == 0 ) //clicou
    {
