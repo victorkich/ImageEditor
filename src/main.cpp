@@ -30,6 +30,7 @@
 #include "Checkbox.h"
 #include "Textfield.h"
 #include "Histogram.h"
+#include "Scrollbar.h"
 
 
 Botao *bt_gs = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
@@ -45,11 +46,13 @@ Checkbox *cb = NULL;
 Slider *slid_r = NULL;
 Slider *slid_g = NULL;
 Slider *slid_b = NULL;
+Scrollbar *sb = NULL;
+Textfield *tf = NULL;
 
 Bmp *img1;
 unsigned char *data;
 
-bool moving = false, resizing = false, sliding_r = false, sliding_g = false, sliding_b = false;
+bool moving = false, resizing = false, sliding_r = false, sliding_g = false, sliding_b = false, scrolling = false;
 int savedx=0;
 int savedy=0;
 int ang=0;
@@ -82,6 +85,8 @@ void updateScales()
    bt_gs->updateScale(screenWidth>>5, (screenHeight>>4)*9, round(float(50*screenHeight)/720));
    bt_right->updateScale(screenWidth>>5, (screenHeight>>4)*11, round(float(50*screenHeight)/720));
    bt_left->updateScale(screenWidth>>5, (screenHeight>>4)*13, round(float(50*screenHeight)/720));
+   tf->updateScale((screenWidth>>5)*25 - int((1280-screenWidth)*0.2), (screenHeight>>5)*15);
+   sb->updateScale(screenWidth-(screenWidth>>6), 0, screenWidth, screenHeight);
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -121,6 +126,12 @@ void render()
    {
        slid_b->setValue(mouseX-savedx);
    }
+   if (scrolling)
+   {
+       sb->setValue(mouseY-savedy);
+   }
+   tf->Render();
+   sb->Render();
 
    img1->Render();
    bt_gs->Render();
@@ -222,23 +233,28 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        {
            cb->updateStatus();
        }
-       if (slid_r->Colidiu(x, y))
+       if( slid_r->Colidiu(x, y) )
        {
            savedx = mouseX;
            sliding_r = true;
        }
-       if (slid_g->Colidiu(x, y))
+       if( slid_g->Colidiu(x, y) )
        {
            savedx = mouseX;
            sliding_g = true;
        }
-       if (slid_b->Colidiu(x, y))
+       if( slid_b->Colidiu(x, y) )
        {
            savedx = mouseX;
            sliding_b = true;
        }
+       if( sb->Colidiu(x, y) )
+       {
+           savedy = mouseY;
+           scrolling = true;
+       }
    }
-   if(state == 1){
+   if( state == 1 ){
       if( img1->collide(x, y) )
        {
            moving = false;
@@ -265,6 +281,11 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        {
            sliding_b = false;
            slid_b->updateValue();
+       }
+       if( scrolling )
+       {
+           scrolling = false;
+           sb->updateValue();
        }
        if( bt_gs->Colidiu(x, y) )
        {
@@ -294,6 +315,18 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        {
            bt_left->setColor(0.6, 0.4, 0.2);
        }
+   }
+   if( button == 3 )
+   {
+       sb->setValue(-(screenHeight>>5));
+       sb->updateValue();
+
+   }
+   if( button == 4 )
+   {
+       sb->setValue(screenHeight>>5);
+       sb->updateValue();
+
    }
 }
 
@@ -334,6 +367,12 @@ int main(void)
    slid_g->setColor(0.3,1,0.3);
    slid_b = new Slider(1000, 600, 200, 50, 25);
    slid_b->setColor(0.3,0.3,1);
+
+   sb = new Scrollbar(1260, 0, 20, 720, 50);
+   sb->setColor(0.5, 0.3, 0.3, 0.7, 0.2, 0.2);
+
+   tf = new Textfield(1000, 325, 200, 150);
+   tf->setColor(1,1,1,0,0,0);
 
    CV::run();
 }

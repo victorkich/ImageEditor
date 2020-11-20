@@ -111,8 +111,6 @@ void Bmp::resize(int x, int y){
          addw = -x;
          break;
       case 2:
-         //addx = -x;
-         //addy = 0;
          addw = x;
          break;
       case 3:
@@ -120,8 +118,6 @@ void Bmp::resize(int x, int y){
          addh = -y;
          break;
       case 4:
-         //addx = 0;
-         addy = 0;
          addh = y;
          break;
    }
@@ -173,7 +169,8 @@ void Bmp::Render()
 
       for(int y=0; y<height; y++)
       for(int x=0; x<width*3; x+=3){
-         int pos = y*bytesPerLine + x;
+         int xc = abs(x-width*3);
+         int pos = y*bytesPerLine + xc;
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
 
          double old_x = x/x_step-new_centre_width-1;
@@ -262,7 +259,7 @@ void Bmp::convertRGBtoGRAY()
      for(int x=0; x<width*3; x+=3)
      {
         int pos = y*bytesPerLine + x;
-        tmp = round((data[pos] + data[pos+1] + data[pos+2]) / 3);
+        tmp = (data[pos] + data[pos+1] + data[pos+2]) / 3;
         data[pos] = tmp;
         data[pos+1] = tmp;
         data[pos+2] = tmp;
