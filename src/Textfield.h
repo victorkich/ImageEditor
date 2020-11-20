@@ -8,6 +8,7 @@ class Textfield{
   float altura, largura, x, y, cr1=1, cg1=1, cb1=1, cr2=0, cg2=0, cb2=0;
   char label_line[MAX_CHARS], buf[MAX_CHARS];
   int num_chars=0;
+  bool status = false;
 
 public:
   Textfield(float _x, float _y, float _larg, float _alt)
@@ -49,6 +50,11 @@ public:
     cb2 = b2;
   }
 
+  void setStatus(bool new_status)
+  {
+    status = new_status;
+  }
+
   void updateScale(int w, int h){
     x = w;
     y = h;
@@ -56,6 +62,15 @@ public:
 
   void Render()
   {
+    if( status )
+    {
+      CV::color(0.1, 0.8, 0.1);
+      
+    }else
+    {
+      CV::color(0.8, 0.1, 0.1);
+    }
+    CV::rectFill(x-5, y-5, x + largura+5, y + altura+5);
     CV::color(cr1, cg1, cb1);
     CV::rectFill(x, y, x + largura, y + altura);
     CV::color(cr2, cg2, cb2);

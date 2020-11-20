@@ -149,10 +149,29 @@ bool Bmp::collide(int mx, int my)
    return false;
 }
 
-void Bmp::Render()
+void Bmp::Render(bool moving, bool resizing, int val_x, int val_y)
 {
+   if (moving)
+   {
+      setAddx(val_x);
+      setAddy(val_y);
+   }
+   if (resizing)
+   {
+      resize(val_x, val_y);
+   }
+
    if (window){
-      CV::color(0.8,0.1,0.1);
+      if (moving)
+      {
+         CV::color(0.1,0.8,0.1);
+      }else if (resizing)
+      {
+         CV::color(0.1,0.1,0.8);
+      }else
+      {
+         CV::color(0.8,0.1,0.1);
+      }
       CV::rectFill(left+startx+addx-5,top+starty+addy-25,right+startx+addx+5, bottom+starty+addy+5);
       CV::color(1,1,1);
       CV::text(left+startx+addx,top+starty+addy-7, "Kyoto.bmp");

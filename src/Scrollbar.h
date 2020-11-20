@@ -59,8 +59,12 @@ public:
     largura = l;
   }
 
-  void Render()
+  void Render(bool scrolling, int val)
   {
+    if (scrolling)
+    {
+       setValue(val);
+    }
     CV::color(cr1, cg1, cb1);
     CV::rectFill(x, y, x+largura, y+altura);
     CV::color(cr2, cg2, cb2);

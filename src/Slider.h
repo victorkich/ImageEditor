@@ -62,8 +62,12 @@ public:
     y = _y;
   }
 
-  void Render()
+  void Render(bool sliding, int val)
   {
+    if (sliding)
+    {
+       setValue(val);
+    }
     CV::color(cr, cg, cb);
     CV::rectFill(x, y+(altura/2)-3, (largura/100)*float(value+addv)+x-6, y+(altura/2)+3);
     CV::rectFill((largura/100)*float(value+addv)+x+6, y+(altura/2)-1, x+largura, y+(altura/2)+1);

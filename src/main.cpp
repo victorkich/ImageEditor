@@ -62,19 +62,11 @@ int opcao  = 50;
 int screenWidth = 1280, screenHeight = 720; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
-void DrawMouseScreenCoords()
-{
-    char str[100];
-    sprintf(str, "Mouse: (%d,%d)", mouseX, mouseY);
-    //CV::text(10,300, str);
-    sprintf(str, "Screen: (%d,%d)", screenWidth, screenHeight);
-    //CV::text(10,320, str);
-}
-
 void updateScales()
 {
-   cb->updateScale((screenWidth>>5)*26, screenHeight>>5, round(float(40*screenHeight)/720), round(float(40*screenWidth)/1280));
-   hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6, round(float(150*screenHeight)/720));
+   int sb_value = (int)(float(sb->getValue())*float(100/screenHeight));
+   cb->updateScale((screenWidth>>5)*26, screenHeight>>5 + sb_value, round(float(40*screenHeight)/720), round(float(40*screenWidth)/1280) + sb_value);
+   hist->updateScale((screenWidth>>5)*24 - int((1280-screenWidth)*0.2), (screenHeight>>5)*6 + sb_value, round(float(150*screenHeight)/720));
    slid_r->updateScale((screenWidth>>5)*25, (screenHeight>>5)*23, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
    slid_g->updateScale((screenWidth>>5)*25, (screenHeight>>5)*26, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
    slid_b->updateScale((screenWidth>>5)*25, (screenHeight>>5)*29, round(float(50*screenHeight)/720), round(float(200*screenWidth)/1280));
@@ -86,54 +78,24 @@ void updateScales()
    bt_right->updateScale(screenWidth>>5, (screenHeight>>4)*11, round(float(50*screenHeight)/720));
    bt_left->updateScale(screenWidth>>5, (screenHeight>>4)*13, round(float(50*screenHeight)/720));
    tf->updateScale((screenWidth>>5)*25 - int((1280-screenWidth)*0.2), (screenHeight>>5)*15);
-   sb->updateScale(screenWidth-(screenWidth>>6), 0, screenWidth, screenHeight);
+   sb->updateScale(screenWidth-(screenWidth>>6), 0, screenHeight, screenWidth);
 }
 
-//funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
-//Todos os comandos para desenho na canvas devem ser chamados dentro da render().
-//Deve-se manter essa fun��o com poucas linhas de codigo.
 void render()
 {
    glClearColor(slid_r->getValue()/100, slid_g->getValue()/100, slid_b->getValue()/100, 0);
    updateScales();
    cb->Render();
-   slid_r->Render();
-   slid_g->Render();
-   slid_b->Render();
    if (cb->getStatus())
    {
        hist->Render();
    }
-    
-   if (moving)
-   {
-      img1->setAddx(mouseX-savedx);
-      img1->setAddy(mouseY-savedy);
-   }
-   if (resizing)
-   {
-      img1->resize(mouseX-savedx, mouseY-savedy);
-   }
-   if (sliding_r)
-   {
-       slid_r->setValue(mouseX-savedx);
-   }
-   if (sliding_g)
-   {
-       slid_g->setValue(mouseX-savedx);
-   }
-   if (sliding_b)
-   {
-       slid_b->setValue(mouseX-savedx);
-   }
-   if (scrolling)
-   {
-       sb->setValue(mouseY-savedy);
-   }
+   slid_r->Render(sliding_r, mouseX-savedx);
+   slid_g->Render(sliding_g, mouseX-savedx);
+   slid_b->Render(sliding_b, mouseX-savedx);
    tf->Render();
-   sb->Render();
-
-   img1->Render();
+   sb->Render(scrolling, mouseY-savedy);
+   img1->Render(moving, resizing, mouseX-savedx, mouseY-savedy);
    bt_gs->Render();
    bt_r->Render();
    bt_g->Render();
@@ -141,7 +103,6 @@ void render()
    bt_clear->Render();
    bt_right->Render();
    bt_left->Render();
-   DrawMouseScreenCoords();
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.
@@ -177,6 +138,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if( tf->Colidiu(x, y) )
        {
            writing = !writing;
+           tf->setStatus(writing);
        }
        if( bt_gs->Colidiu(x, y) )
        {
@@ -376,7 +338,7 @@ int main(void)
    slid_b = new Slider(1000, 600, 200, 50, 25);
    slid_b->setColor(0.3,0.3,1);
 
-   sb = new Scrollbar(1260, 0, 20, 720, 50);
+   sb = new Scrollbar(1260, 0, 20, 720, 0);
    sb->setColor(0.5, 0.3, 0.3, 0.7, 0.2, 0.2);
 
    tf = new Textfield(1000, 325, 200, 150);

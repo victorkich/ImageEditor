@@ -68,7 +68,7 @@ public:
    void   updateStarty(void);
    void   convertBGRtoRGB(void);
    void   convertRGBtoGRAY(void);
-   void   Render(void);
+   void   Render(bool, bool, int, int);
    bool   collide(int, int);
    void   restore(const char *fileName);
    void   chooseChannel(int);
