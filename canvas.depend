@@ -120,7 +120,7 @@
 	"gl_canvas2d.h"
 	<GL/glut.h>
 
-1605906321 source:/home/victorkich/git/ImageEditor/src/main.cpp
+1605910042 source:/home/victorkich/git/ImageEditor/src/main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -152,6 +152,6 @@
 1605818934 /home/victorkich/git/ImageEditor/src/Histogram.h
 	"gl_canvas2d.h"
 
-1605906269 /home/victorkich/git/ImageEditor/src/Scrollbar.h
+1605910029 /home/victorkich/git/ImageEditor/src/Scrollbar.h
 	"gl_canvas2d.h"
 
