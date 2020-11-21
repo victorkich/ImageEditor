@@ -3,6 +3,7 @@
 
 #include "gl_canvas2d.h"
 
+//Classe de criacao do histograma
 class Histogram{
   float altura, x, y;
   char label[100];
@@ -10,6 +11,7 @@ class Histogram{
   int width, height, bytesPerLine, max;
   int r[255], g[255], b[255];
 
+//Chamada de criacao
 public:
   Histogram(float _x, float _y, float _alt, unsigned char *image, int w, int h, int bpl)
   {
@@ -24,6 +26,7 @@ public:
      getRGB();
   }
 
+  //Funcao que calcula todas as cores da imagem e agrupa nas variaveis r,g e b. Armazenando também o pico dentre as somas.
   void getRGB(){
     for(int p = 0 ; p < 255 ; p++){
         r[p] = 0;
@@ -51,18 +54,21 @@ public:
     }
   }
 
+  //Funcao para atualizar a localizacao em torno do ponto inicial x e y
   void updateLocation(float _x, float _y)
   {
     x = _x;
     y = _y;
   }
 
+  //Funcao para reescalonar a imagem dentro do canvas
   void updateScale(int w, int h, int a){
     x = w;
     y = h;
     altura = a;
   }
 
+  //Funcao para renderizar o histograma dentro do canvas, plotando cada linha das variaveis r g e b levando em conta suas cores
   void Render()
   {
     CV::color(1, 1, 1);
@@ -79,17 +85,6 @@ public:
        CV::line(p-1+x+5, (altura-(altura/max)*b[p-1])+y+5, p+x+5, (altura-(altura/max)*b[p])+y+5);
     }
   }
-
-  //recebe as coordenadas do mouse para tratar clique ou detectar quando o mouse esta em cima do botao
-  bool Colidiu(int mx, int my)
-  {
-      if( mx >= x && mx <= (x + 265) && my >= y && my <= (y + altura) )
-      {
-          return true;
-      }
-      return false;
-  }
-
 };
 
 #endif

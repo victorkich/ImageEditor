@@ -4,12 +4,14 @@
 #include "gl_canvas2d.h"
 #define MAX_CHARS 162
 
+//Classe de criacao do campo de texto
 class Textfield{
   float altura, largura, x, y, cr1=1, cg1=1, cb1=1, cr2=0, cg2=0, cb2=0;
   char label_line[MAX_CHARS], buf[MAX_CHARS];
   int num_chars=0;
   bool status = false;
 
+//Chamada de criacao
 public:
   Textfield(float _x, float _y, float _larg, float _alt)
   {
@@ -19,6 +21,7 @@ public:
      y = _y;
   }
 
+  //Funcao para adicionar ou remover letras do buffer
   void addChar(int _label)
   {
     if( _label != 8 )
@@ -41,6 +44,7 @@ public:
     }
   }
 
+  // Funcao para configurar as cores do fundo e das letras
   void setColor(float r1, float g1, float b1, float r2, float g2, float b2){
     cr1 = r1;
     cg1 = g1;
@@ -50,16 +54,19 @@ public:
     cb2 = b2;
   }
 
+  //Funcao para trocar o estado atual digitando/nao digitando
   void setStatus(bool new_status)
   {
     status = new_status;
   }
 
+  //Funcao para reescalonar a imagem dentro do canvas
   void updateScale(int w, int h){
     x = w;
     y = h;
   }
 
+  //Funcao para renderizar todos os conjuntos de caracteres de buffer passando para agrupamentos na variavel label_line
   void Render()
   {
     if( status )
@@ -100,7 +107,7 @@ public:
     }    
   }
 
-  //recebe as coordenadas do mouse para tratar clique ou detectar quando o mouse esta em cima do botao
+  //Recebe as coordenadas do mouse para tratar clique ou detectar quando o mouse esta em cima da caixa de texto
   bool Colidiu(int mx, int my)
   {
       if( mx >= x && mx <= (x + largura) && my >= y && my <= (y + altura) )

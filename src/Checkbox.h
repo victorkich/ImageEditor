@@ -3,11 +3,13 @@
 
 #include "gl_canvas2d.h"
 
+//Classe de criacao da caixa de checagem
 class Checkbox{
   float altura, largura, x, y;
   char label[100];
   bool active;
 
+//Chamada de criacao
 public:
   Checkbox(float _x, float _y, float _larg, float _alt, char *_label, bool act)
   {
@@ -19,12 +21,14 @@ public:
      active = act;
   }
 
+  //Funcao para atualizar a localizacao em torno do ponto inicial x e y
   void updateLocation(float _x, float _y)
   {
     x = _x;
     y = _y;
   }
 
+  //Funcao para reescalonar a imagem dentro do canvas
   void updateScale(int w, int h, int a, int l){
     x = w;
     y = h;
@@ -32,16 +36,19 @@ public:
     largura = l;
   }
 
+  //Funcao para trocar o estado atual ativo/nao ativo
   void updateStatus()
   {
     active = !active;
   }
 
+  //Funcao que retorna o estado atual
   bool getStatus()
   {
     return active;
   }
 
+  //Funcao para renderizar a caixa de selecao, podendo também inserir duas linhas nas diagonais da caixa caso o status esteja ativado
   void Render()
   {
     CV::color(1, 1, 1);

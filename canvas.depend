@@ -105,7 +105,7 @@
 1193164156 /home/victorkich/git/ImageEditor/src/Relogio.h
 	"gl_canvas2d.h"
 
-1605564020 /home/victorkich/git/ImageEditor/src/gl_canvas2d.h
+1605913845 /home/victorkich/git/ImageEditor/src/gl_canvas2d.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>

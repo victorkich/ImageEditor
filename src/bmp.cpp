@@ -15,6 +15,7 @@ double angle = 0;
 int new_width = 0, new_height=0, borderType=0, addh=0, addw=0;
 int left=0, right=0, top=0, bottom=0;
 
+//Chamada de criacao
 Bmp::Bmp(const char *fileName)
 {
    width = height = 0;
@@ -30,59 +31,71 @@ Bmp::Bmp(const char *fileName)
    }
 }
 
+//Retorna o vetor dos pixels da imagem
 uchar* Bmp::getImage()
 {
   return data;
 }
 
+//Retorna o tamanho horizontal da imagem
 int Bmp::getWidth(void)
 {
   return width;
 }
 
+//Retorna o tamanho vertical da imagem
 int Bmp::getHeight(void)
 {
   return height;
 }
 
+//Atualiza o ponto x inicial para a imagem
 void Bmp::updateStartx()
 {
    startx += addx;
    addx = 0;
 }
 
+//Atualiza o ponto y inicial para a imagem
 void Bmp::updateStarty()
 {
    starty += addy;
    addy = 0;
 }
 
+//Retorna o ponto x inicial da imagem
 int Bmp::getStartx(){
    return startx;
 }
 
+//Retorna o ponto y inicial da imagem
 int Bmp::getStarty(){
    return starty;
 }
 
+//Atualiza o valor dinamico de x para modificar a posicao da imagem
 void Bmp::setAddx(int x)
 {
    addx = x;
 }
 
+//Atualiza o valor dinamico de y para modificar a posicao da imagem
 void Bmp::setAddy(int y)
 {
    addy = y;
 }
 
+//Funcao de conversar de radianos para graus
 void Bmp::rotate(int a){
    angle = (a * M_PI) / 180;
 }
 
+//Funcao para selecionar se a imagem tera uma janela como borda ou nao
 void Bmp::useWindow(bool w){
    window = w;
 }
 
+//Funcao que verifica qual borda foi clicada, superior, inferior, lateral direita, lateral esquerda
 bool Bmp::windowCollide(int mx, int my){
    if( mx >= (startx + addx - 5) && mx <= (addx + startx + right + 5) && my >= (starty + addy - 25) && my <= (starty + bottom + addy + 5) )
    {
@@ -104,6 +117,7 @@ bool Bmp::windowCollide(int mx, int my){
    return false;
 }
 
+//Funcao que aplica o reescalonamento da imagem para a respectiva borda clicada
 void Bmp::resize(int x, int y){
    switch (borderType){
       case 1:
@@ -124,6 +138,7 @@ void Bmp::resize(int x, int y){
 
 }
 
+//Funcao que salva os valores modificados no reescalonamento para o novo tamanho de imagem
 void Bmp::updateResize(){
    new_width += addw;
    new_height += addh;
@@ -131,15 +146,18 @@ void Bmp::updateResize(){
    addh = 0;
 }
 
+//Retorna a quantidade de espaco de cores por linha na imagem
 int Bmp::getbytesPerLine(){
    return bytesPerLine;
 }
 
+//Funcao para recarregar a imagem novamente
 void Bmp::restore(const char *fileName){
    load(fileName);
    convertBGRtoRGB();
 }
 
+//Funcao para verificar se a imagem foi clicada para ser movimentada pelo canvas
 bool Bmp::collide(int mx, int my)
 {
    if( mx >= startx+addx && mx <= (addx + startx + right + addw) && my >= starty+addy && my <= (starty + bottom + addy + addh) )
@@ -149,19 +167,20 @@ bool Bmp::collide(int mx, int my)
    return false;
 }
 
+//Funcao para renderizar a imagem checando as escalas e as rotacoes, bem como a janela a sua volta
 void Bmp::Render(bool moving, bool resizing, int val_x, int val_y)
 {
-   if (moving)
+   if (moving)//Checa se a imagem esta clicada para atualizar sua posicao
    {
       setAddx(val_x);
       setAddy(val_y);
    }
-   if (resizing)
+   if (resizing)//Checa se a imagem esta sendo reescalonada para modificar sua visualizacao
    {
       resize(val_x, val_y);
    }
 
-   if (window){
+   if (window){//Checa se a imagem ira mostrar uma janela em sua volta
       if (moving)
       {
          CV::color(0.1,0.8,0.1);
@@ -178,29 +197,37 @@ void Bmp::Render(bool moving, bool resizing, int val_x, int val_y)
    }
    if( data != NULL)
    {
+      //Acha o centro de rotacao da imagem
       int new_centre_height= round(((new_height+addh+1)/2)-1);
       int new_centre_width= round(((new_width+addw+1)/2)-1);
 
+      //Calcula o passo para realizar a rotacao da imagem
       double x_step = 3*(double(width)/double(new_width+addw));
       double y_step = double(height)/double(new_height+addh);
 
+      //Primeira vez rodando
       bool first = true;
 
-      for(int y=0; y<height; y++)
+      for(int y=0; y<height; y++)//Percorre todos os valores da imagem
       for(int x=0; x<width*3; x+=3){
-         int xc = abs(x-width*3);
-         int pos = y*bytesPerLine + xc;
+         int xc = abs(x-width*3);//Desvira a imagem horizontalmente
+         int pos = y*bytesPerLine + xc;//Calcula a quantidade de pixels por linha
+         //Seleciona a cor de cada pixel que sera desenhado
          CV::color((float)(data[pos])/255, (float)(data[pos+1])/255, (float)(data[pos+2])/255);
 
+         //Calcula os antigos pontos x e y que serao rotacionados
          double old_x = x/x_step-new_centre_width-1;
          double old_y = y/y_step-new_centre_height-1;
 
+         //Calcula os novos pontos pos rotacao da imagem
          int new_y = round(-old_x*sin(angle)+old_y*cos(angle));
          int new_x = round(old_x*cos(angle)+old_y*sin(angle));
 
+         //Recentralia a imagem ja rotacionada
          new_y=new_centre_height-new_y;
          new_x=new_centre_width-new_x;
 
+         //Checa as bordas da imagem para ajustar a janela de fundo e o redimencionamento
          if (first){
             top = y;
             bottom = y;
@@ -225,6 +252,7 @@ void Bmp::Render(bool moving, bool resizing, int val_x, int val_y)
 
 }
 
+//Funcao que escolhe um canal de cor para manter e zera os outros canais de cores da imagem
 void Bmp::chooseChannel(int c)
 {
   unsigned char tmp;
@@ -253,6 +281,7 @@ void Bmp::chooseChannel(int c)
   }
 }
 
+//Converte a imagem do padrao BGR para o RGB
 void Bmp::convertBGRtoRGB()
 {
   unsigned char tmp;
@@ -269,6 +298,7 @@ void Bmp::convertBGRtoRGB()
   }
 }
 
+//Converte a imagem do padrao RGB para o padrao grayscale
 void Bmp::convertRGBtoGRAY()
 {
   unsigned char tmp;
@@ -286,6 +316,7 @@ void Bmp::convertRGBtoGRAY()
   }
 }
 
+//Carrega a imagem .BMP
 void Bmp::load(const char *fileName)
 {
   FILE *fp = fopen(fileName, "rb");

@@ -39,6 +39,9 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
+			<!--Add library="../lib/freeglut.lib" /-->
+			<!--Add library="../lib/libglu32.a" /-->
+			<!--Add library="../lib/libopengl32.a" /-->
 			<Add option="-lGL" />
 			<Add option="-lGLU" />
 			<Add option="-lglut" />
@@ -50,11 +53,7 @@
 		<Unit filename="src/Slider.h" />
 		<Unit filename="src/Textfield.h" />
 		<Unit filename="src/Histogram.h" />
-		<Unit filename="src/Bola.h" />
 		<Unit filename="src/Botao.h" />
-		<Unit filename="src/Relogio.cpp" />
-		<Unit filename="src/Relogio.h" />
-		<Unit filename="src/Vector2.h" />
 		<Unit filename="src/gl_canvas2d.cpp" />
 		<Unit filename="src/gl_canvas2d.h" />
 		<Unit filename="src/main.cpp" />
