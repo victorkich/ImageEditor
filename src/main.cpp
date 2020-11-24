@@ -175,7 +175,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if( bt_clear->Colidiu(x, y) )//Recarrega a imagem e atualiza o histograma
        {
            bt_clear->setColor(0, 0.4, 0);
-           img1->restore(".\/Canvas2D\/resources\/kyoto.bmp");
+           img1->restore(".\/ImageViewer\/resources\/kyoto.bmp");
            data = img1->getImage();
            hist = new Histogram(625, 600, 150, data, img1->getWidth(), img1->getHeight(), img1->getbytesPerLine());
        }
@@ -292,10 +292,10 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   CV::init(&screenWidth, &screenHeight, "Image Editor");
+   CV::init(&screenWidth, &screenHeight, "Image Viewer");
 
    //Cria e carrega a imagem do tipo BMP
-   img1 = new Bmp(".\/ImageEditor\/resources\/kyoto.bmp");
+   img1 = new Bmp(".\/ImageViewer\/resources\/kyoto.bmp");
    img1->convertBGRtoRGB();
    data = img1->getImage();
    img1->setAddx((screenWidth>>4)*5);

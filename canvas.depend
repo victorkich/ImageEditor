@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1606173322 source:/home/victorkich/git/ImageViewer/src/bmp.cpp
+	"Bmp.h"
+	<string.h>
+	"gl_canvas2d.h"
+
+1606173322 /home/victorkich/git/ImageViewer/src/Bmp.h
+	<stdio.h>
+	<stdlib.h>
+
+1606173322 /home/victorkich/git/ImageViewer/src/gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	"Vector2.h"
+
+1606173322 /home/victorkich/git/ImageViewer/src/Vector2.h
+
+1606173322 source:/home/victorkich/git/ImageViewer/src/gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
