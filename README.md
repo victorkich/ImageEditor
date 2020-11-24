@@ -24,7 +24,7 @@
 git clone https://github.com/victorkich/ImageViewer/
 ```
 
-<a>All of requirements is show in the badgets above, but if you want to install all of them, enter the repository and execute the following line of code:</a>
+<a>All of requirements is show in the badgets above, but if you want to install all of them, execute the following line of code:</a>
 </p>
 
 ```shell
